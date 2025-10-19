@@ -6,14 +6,18 @@ const Database = require('better-sqlite3');
 const path = require('path');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
+// Определяем пути для production и development
+const isProduction = process.env.NODE_ENV === 'production';
+const rootDir = isProduction ? __dirname : path.join(__dirname, '..');
+
 // SQLite database setup
-const dbPath = path.join(__dirname, '../database/employee_management.db');
+const dbPath = path.join(rootDir, 'database', 'employee_management.db');
 const db = new Database(dbPath);
 
 // Enable foreign keys
@@ -23,6 +27,7 @@ db.pragma('foreign_keys = ON');
 function initializeDatabase() {
   try {
     console.log('🔄 Initializing SQLite database...');
+    console.log('📁 Database path:', dbPath);
 
     // Create tables
     db.exec(`
@@ -97,7 +102,7 @@ function initializeDatabase() {
 initializeDatabase();
 
 // JWT Secret
-const JWT_SECRET = 'your-secret-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
 // Authentication middleware
 const authenticateToken = (req, res, next) => {
@@ -471,16 +476,33 @@ app.get('/api/health', (req, res) => {
     res.json({ 
       status: 'OK', 
       database: 'SQLite', 
-      timestamp: new Date().toISOString() 
+      timestamp: new Date().toISOString(),
+      environment: process.env.NODE_ENV || 'development'
     });
   } catch (error) {
     res.status(500).json({ status: 'ERROR', error: error.message });
   }
 });
 
+// Serve Angular static files in production
+if (isProduction) {
+  const angularDistPath = path.join(__dirname, '../employee-management');
+  app.use(express.static(angularDistPath));
+  
+  // Handle Angular routes
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(angularDistPath, '../employee-management', 'index.html'));
+  });
+}
+
 app.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
-  console.log(`📊 Using SQLite database`);
+  console.log(`📊 Using SQLite database: ${dbPath}`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log(`🔗 Health check: http://localhost:${port}/api/health`);
   console.log(`👤 Admin credentials: admin / password`);
+  
+  if (isProduction) {
+    console.log(`📱 Serving Angular app from: ${path.join(__dirname, 'browser')}`);
+  }
 });
