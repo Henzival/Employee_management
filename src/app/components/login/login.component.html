@@ -1,14 +1,19 @@
 <div class="login-container">
   <div class="login-form">
-    <h2>{{ translationService.translate('LOGIN.TITLE') }}</h2>
+    <div class="login-header">
+      <h2>{{ translationService.translate('LOGIN.TITLE') }}</h2>
+    </div>
     
     <div *ngIf="errorMessage" class="error-message">
+      <i class="icon-error"></i>
       {{ errorMessage }}
     </div>
+
 
     <form [formGroup]="loginForm" (ngSubmit)="login()" class="login-form-content">
       <div class="form-group">
         <label for="username" class="form-label">
+          <i class="icon-user"></i>
           {{ translationService.translate('LOGIN.USERNAME') }}
         </label>
         <input 
@@ -17,29 +22,38 @@
           formControlName="username"
           class="form-input"
           [class.error]="username?.invalid && username?.touched"
-          placeholder="{{ translationService.translate('LOGIN.USERNAME') }}"
-          autocomplete="username">
+          autocomplete="username"
+          (keypress)="onKeyPress($event)"
+          [attr.aria-describedby]="username?.invalid ? 'username-error' : null">
         
-        <div *ngIf="username?.invalid && username?.touched" class="validation-error">
-          {{ translationService.translate('LOGIN.USERNAME') }} обязательно
+        <div *ngIf="username?.invalid && username?.touched" class="validation-error" id="username-error">
+          <div *ngIf="username?.errors?.['required']">
+            {{ translationService.translate('VALIDATORS.REQUIRED') }}
+          </div>
         </div>
       </div>
 
       <div class="form-group">
         <label for="password" class="form-label">
+          <i class="icon-lock"></i>
           {{ translationService.translate('LOGIN.PASSWORD') }}
         </label>
-        <input 
-          type="password" 
-          id="password"
-          formControlName="password"
-          class="form-input"
-          [class.error]="password?.invalid && password?.touched"
-          placeholder="{{ translationService.translate('LOGIN.PASSWORD') }}"
-          autocomplete="current-password">
+        <div class="password-container">
+          <input 
+            type="password" 
+            id="password"
+            formControlName="password"
+            class="form-input password-input"
+            [class.error]="password?.invalid && password?.touched"
+            autocomplete="current-password"
+            (keypress)="onKeyPress($event)"
+            [attr.aria-describedby]="password?.invalid ? 'password-error' : null">
+        </div>
         
-        <div *ngIf="password?.invalid && password?.touched" class="validation-error">
-          {{ translationService.translate('LOGIN.PASSWORD') }} обязателен
+        <div *ngIf="password?.invalid && password?.touched" class="validation-error" id="password-error">
+          <div *ngIf="password?.errors?.['required']">
+            {{ translationService.translate('VALIDATORS.REQUIRED') }}
+          </div>
         </div>
       </div>
 
@@ -47,18 +61,29 @@
         <button 
           type="submit" 
           class="btn btn-primary btn-login"
-          [disabled]="loginForm.invalid || isLoading">
-          <span *ngIf="!isLoading">{{ translationService.translate('LOGIN.BUTTON') }}</span>
-          <span *ngIf="isLoading" class="loading-text">⏳ {{ translationService.translate('LOGIN.BUTTON') }}...</span>
+          [disabled]="loginForm.invalid || isLoading"
+          [class.loading]="isLoading">
+          <span *ngIf="!isLoading">
+            <i class="icon-login"></i>
+            {{ translationService.translate('LOGIN.BUTTON') }}
+          </span>
+          <span *ngIf="isLoading" class="loading-text">
+            <div class="spinner"></div>
+            Вход в систему...
+          </span>
         </button>
         
-        <button 
-          type="button" 
-          class="btn btn-secondary"
-          (click)="cancel()"
-          [disabled]="isLoading">
-          {{ translationService.translate('ACTIONS.CANCEL') }}
-        </button>
+        <div class="secondary-actions">
+          <button 
+            type="button" 
+            class="btn btn-secondary btn-cancel"
+            (click)="cancel()"
+            [disabled]="isLoading">
+            <i class="icon-cancel"></i>
+            {{ translationService.translate('ACTIONS.CANCEL') }}
+          </button>
+          
+        </div>
       </div>
     </form>
   </div>

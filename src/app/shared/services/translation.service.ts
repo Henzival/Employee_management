@@ -25,7 +25,7 @@ export class TranslationService {
   }
 
   private loadTranslations(lang: string): void {
-    this.http.get<Translations>(`/assets/i18n/${lang}.json`)
+    this.http.get<Translations>(`${lang}.json`)
       .pipe(
         catchError(error => {
           console.error(`Error loading ${lang} translations:`, error);
@@ -67,7 +67,7 @@ export class TranslationService {
   }
 
   public reloadTranslations(lang: string): Observable<boolean> {
-    return this.http.get<Translations>(`/assets/i18n/${lang}.json`)
+    return this.http.get<Translations>(`${lang}.json`)
       .pipe(
         tap(translations => {
           this.translations[lang] = translations;
