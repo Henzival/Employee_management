@@ -1,0 +1,17 @@
+<div class="language-switcher" *ngIf="translationsLoaded">
+  <button 
+    [class.active]="currentLang === 'ru'"
+    (click)="switchLanguage('ru')"
+    class="lang-btn">
+    RU
+  </button>
+  <button 
+    [class.active]="currentLang === 'en'"
+    (click)="switchLanguage('en')"
+    class="lang-btn">
+    EN
+  </button>
+</div>
+<div class="language-switcher loading" *ngIf="!translationsLoaded">
+  Loading...
+</div>

@@ -1,0 +1,111 @@
+@import './shared/styles/variables';
+@import './shared/styles/mixins';
+
+.header {
+  background: linear-gradient(135deg, $dark-blue, lighten($dark-blue, 20%));
+  color: $white;
+  padding: $spacing-xl;
+  margin-bottom: $spacing-xl;
+  border-radius: 0 0 $border-radius $border-radius;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: $spacing-lg;
+    flex-wrap: wrap;
+  }
+
+  .header-content {
+    flex: 1;
+    min-width: 300px;
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: $spacing-sm;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      
+      @media (max-width: 768px) {
+        font-size: 2rem;
+      }
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin: 0;
+      font-weight: 300;
+      
+      @media (max-width: 768px) {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .header-controls {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-md;
+    align-items: flex-end;
+
+    @media (max-width: 768px) {
+      align-items: stretch;
+      width: 100%;
+    }
+  }
+
+  .navigation {
+    display: flex;
+    gap: $spacing-md;
+    align-items: center;
+    flex-wrap: wrap;
+
+    @media (max-width: 768px) {
+      justify-content: center;
+    }
+
+    .nav-link {
+      color: $white;
+      text-decoration: none;
+      padding: $spacing-sm $spacing-md;
+      border-radius: $border-radius;
+      transition: background-color 0.3s ease;
+      font-weight: 500;
+
+      &:hover {
+        background: rgba($white, 0.1);
+      }
+
+      &.active {
+        background: rgba($white, 0.2);
+      }
+    }
+
+    .btn-sm {
+      padding: $spacing-xs $spacing-sm;
+      font-size: 0.875rem;
+    }
+  }
+}
+
+main {
+  min-height: calc(100vh - 200px);
+  padding-bottom: $spacing-xl;
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: $spacing-lg;
+    
+    .container {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .header-controls {
+      align-items: center;
+    }
+  }
+}

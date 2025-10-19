@@ -1,0 +1,26 @@
+@import '../styles/variables';
+
+.language-switcher {
+  display: flex;
+  gap: 0.5rem;
+  
+  .lang-btn {
+    padding: 0.5rem 1rem;
+    border: 2px solid $dark-blue;
+    background: $white;
+    color: $dark-blue;
+    border-radius: $border-radius;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+
+    &.active {
+      background: $dark-blue;
+      color: $white;
+    }
+
+    &:hover:not(.active) {
+      background: lighten($dark-blue, 50%);
+    }
+  }
+}

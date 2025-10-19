@@ -1,0 +1,36 @@
+<header class="header">
+  <div class="container">
+    <div class="header-content">
+      <h1>{{ translationService.translate('HEADER.TITLE') }}</h1>
+      <p class="subtitle">{{ translationService.translate('HEADER.SUBTITLE') }}</p>
+    </div>
+    
+    <div class="header-controls">
+      <app-language-switcher></app-language-switcher>
+      
+      <nav class="navigation">
+        <a routerLink="/employees" class="nav-link">
+          {{ translationService.translate('NAVIGATION.EMPLOYEES') }}
+        </a>
+        
+        <a *ngIf="!isLoggedIn" routerLink="/login" class="nav-link">
+          {{ translationService.translate('NAVIGATION.ADMIN') }}
+        </a>
+        
+        <a *ngIf="isLoggedIn" routerLink="/admin" class="nav-link">
+          {{ translationService.translate('NAVIGATION.ADMIN') }}
+        </a>
+        
+        <button *ngIf="isLoggedIn" class="btn btn-danger btn-sm" (click)="logout()">
+          {{ translationService.translate('NAVIGATION.LOGOUT') }}
+        </button>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <router-outlet></router-outlet>
+</main>
+
+<app-modal-container></app-modal-container>

@@ -1,0 +1,246 @@
+<div class="admin-dashboard">
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="loading-spinner">{{ translationService.translate('LOADING.MESSAGE') }}</div>
+  </div>
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+  
+ 
+  <div *ngIf="showMainInterface" class="main-interface">
+    <div class="admin-header">
+      <h2>{{ translationService.translate('NAVIGATION.ADMIN') }}</h2>
+      <div class="admin-actions">
+        <button class="btn btn-primary" (click)="createEmployee()">
+          {{ translationService.translate('EMPLOYEE.ADD') }}
+        </button>
+        <button class="btn btn-warning" (click)="showAddPositionForm()">
+          {{ translationService.translate('POSITION.ADD') }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showPositionForm" class="form-interface">
+    <div class="form-header">
+      <h2>{{ translationService.translate('POSITION.ADD') }}</h2>
+      <button class="btn btn-secondary" (click)="cancelForm()">
+        {{ translationService.translate('BUTTON.BACK') }}
+      </button>
+    </div>
+    <div class="positions-section" *ngIf="showPositionForm">
+      <div class="card">
+        <div class="card-header">
+          <h3>{{ translationService.translate('POSITION.MANAGE') }}</h3>
+        </div>
+        <div class="card-content">
+          <form [formGroup]="positionForm">
+            <div class="form-group">
+              <label>{{ translationService.translate('POSITION.NAME') }}</label>
+              <input type="text" formControlName="name" placeholder="{{ translationService.translate('POSITION.ENTERNAME') }}">
+              <div *ngIf="isFieldInvalid(positionForm, 'name')" class="error-text">
+                {{ getFieldError(positionForm, 'name') }}
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-success" (click)="createPosition()" [disabled]="positionForm.invalid">
+                {{ translationService.translate('POSITION.ADD') }}
+              </button>
+              <button class="btn btn-secondary" type="button" (click)="cancelForm()">
+                {{ translationService.translate('ACTIONS.CANCEL') }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="positions-section">
+    <div class="card" *ngIf="!showEmployeeForm && !showPositionForm">
+      <div class="card-header">
+        <h3>{{ translationService.translate('POSITION.EXISTING') }}</h3>
+      </div>
+      <div class="card-content">
+        <div class="positions-list" *ngIf="positions.length > 0">
+          <div class="positions-grid">
+            <div *ngFor="let position of positions" class="position-item">
+              <span class="position-name">{{ position.name }}</span>
+              <button class="btn btn-danger btn-sm" (click)="deletePosition(position.id!)" *ngIf="positions.length > 1"
+                title="Удалить должность">
+                {{ translationService.translate('ACTIONS.DELETE') }}
+              </button>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="positions.length === 0" class="no-data">
+          <p>{{ translationService.translate('POSITION.ABSCENCE') }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="showEmployeeForm" class="form-interface">
+    <div class="form-header">
+      <h2>{{ isEditing ? translationService.translate('EMPLOYEE.EDIT') : translationService.translate('EMPLOYEE.ADD') }}
+      </h2>
+      <button class="btn btn-secondary" (click)="cancelForm()">
+        {{ translationService.translate('BUTTON.BACK') }}
+      </button>
+    </div>
+    <div class="employee-form-section" *ngIf="showEmployeeForm">
+      <div class="card">
+        <div class="card-header">
+          <h3>{{ isEditing ? translationService.translate('EMPLOYEE.EDIT') :
+            translationService.translate('EMPLOYEE.ADD')
+            }}</h3>
+        </div>
+        <div class="card-content">
+          <form [formGroup]="employeeForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label>{{ translationService.translate('EMPLOYEE.FIELDS.LAST_NAME') }} *</label>
+                <input type="text" formControlName="last_name"
+                  [placeholder]="translationService.translate('EMPLOYEE.FIELDS.LAST_NAME')">
+                <div *ngIf="isFieldInvalid(employeeForm, 'last_name')" class="error-text">
+                  {{ getFieldError(employeeForm, 'last_name') }}
+                </div>
+              </div>
+              <div class="form-group">
+                <label>{{ translationService.translate('EMPLOYEE.FIELDS.FIRST_NAME') }} *</label>
+                <input type="text" formControlName="first_name"
+                  [placeholder]="translationService.translate('EMPLOYEE.FIELDS.FIRST_NAME')">
+                <div *ngIf="isFieldInvalid(employeeForm, 'first_name')" class="error-text">
+                  {{ getFieldError(employeeForm, 'first_name') }}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>{{ translationService.translate('EMPLOYEE.FIELDS.MIDDLE_NAME') }}</label>
+                <input type="text" formControlName="middle_name"
+                  [placeholder]="translationService.translate('EMPLOYEE.FIELDS.MIDDLE_NAME')">
+                <div *ngIf="isFieldInvalid(employeeForm, 'middle_name')" class="error-text">
+                  {{ getFieldError(employeeForm, 'middle_name') }}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>{{ translationService.translate('EMPLOYEE.FIELDS.POSITION') }} *</label>
+                <select formControlName="position_id">
+                  <option value="">{{ translationService.translate('POSITION.CHOOSE') }}</option>
+                  <option *ngFor="let position of positions" [value]="position.id">
+                    {{ position.name }}
+                  </option>
+                </select>
+                <div *ngIf="isFieldInvalid(employeeForm, 'position_id')" class="error-text">
+                  {{ getFieldError(employeeForm, 'position_id') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>{{ translationService.translate('EMPLOYEE.FIELDS.SALARY') }} *</label>
+                <input type="number" formControlName="salary"
+                  [placeholder]="translationService.translate('EMPLOYEE.FIELDS.SALARY')" min="0">
+                <div *ngIf="isFieldInvalid(employeeForm, 'salary')" class="error-text">
+                  {{ getFieldError(employeeForm, 'salary') }}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>{{ translationService.translate('EMPLOYEE.FIELDS.EMAIL') }} *</label>
+                <input type="email" formControlName="contact_email"
+                  [placeholder]="translationService.translate('EMPLOYEE.FIELDS.EMAIL')">
+                <div *ngIf="isFieldInvalid(employeeForm, 'contact_email')" class="error-text">
+                  {{ getFieldError(employeeForm, 'contact_email') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>{{ translationService.translate('EMPLOYEE.FIELDS.PHONE') }} *</label>
+                <input type="tel" formControlName="contact_phone"
+                  placeholder="{{ translationService.translate('VALIDATORS.FOREXAMPLE') }}111111, +375(11)1111111"
+                  (input)="formatPhoneNumber($event)">
+                <div *ngIf="isFieldInvalid(employeeForm, 'contact_phone')" class="error-text">
+                  {{ getFieldError(employeeForm, 'contact_phone') }}
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>{{ translationService.translate('EMPLOYEE.FIELDS.ADDRESS') }}</label>
+              <textarea formControlName="address"
+                [placeholder]="translationService.translate('EMPLOYEE.FIELDS.ADDRESS')" rows="3"></textarea>
+              <div *ngIf="isFieldInvalid(employeeForm, 'address')" class="error-text">
+                {{ getFieldError(employeeForm, 'address') }}
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn btn-success" (click)="saveEmployee()" [disabled]="employeeForm.invalid">
+                {{ translationService.translate('ACTIONS.SAVE') }}
+              </button>
+              <button class="btn btn-secondary" type="button" (click)="cancelForm()">
+                {{ translationService.translate('ACTIONS.CANCEL') }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="employees-section" *ngIf="!showPositionForm && !showEmployeeForm">
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>{{ translationService.translate('EMPLOYEE.FIELDS.EMPLOYEE_ID') }}</th>
+            <th>{{ translationService.translate('EMPLOYEE.FIELDS.LAST_NAME') }}</th>
+            <th>{{ translationService.translate('EMPLOYEE.FIELDS.FIRST_NAME') }}</th>
+            <th>{{ translationService.translate('EMPLOYEE.FIELDS.POSITION') }}</th>
+            <th>{{ translationService.translate('EMPLOYEE.FIELDS.EMAIL') }}</th>
+            <th>{{ translationService.translate('EMPLOYEE.FIELDS.PHONE') }}</th>
+            <th>{{ translationService.translate('EMPLOYEE.FIELDS.ADDRESS') }}</th>
+            <th>{{ translationService.translate('EMPLOYEE.FIELDS.SALARY') }}</th>
+            <th>{{ translationService.translate('EMPLOYEE.FIELDS.ACTIONS') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let employee of employees">
+            <td>{{ employee.employee_id }}</td>
+            <td>{{ employee.last_name }}</td>
+            <td>{{ employee.first_name }}</td>
+            <td>{{ employee.position_name }}</td>
+            <td>{{ employee.contact_email }}</td>
+            <td>{{ employee.contact_phone }}</td>
+            <td class="address-cell">{{ employee.address }}</td>
+            <td>{{ employee.salary | currency:'USD':'symbol':'1.0-0' }}</td>
+            <td>
+              <div class="actions">
+                <button class="btn btn-warning btn-sm" (click)="editEmployee(employee)">
+                  {{ translationService.translate('ACTIONS.EDIT') }}
+                </button>
+                <button class="btn btn-danger btn-sm" (click)="deleteEmployee(employee.id!)">
+                  {{ translationService.translate('ACTIONS.DELETE') }}
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="employees.length === 0" class="no-data">
+        <p>{{ translationService.translate('EMPLOYEE.ABSCENCE') }}</p>
+        <button class="btn btn-primary" (click)="createEmployee()">
+          {{ translationService.translate('EMPLOYEE.ADD') }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

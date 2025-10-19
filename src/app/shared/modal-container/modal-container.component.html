@@ -1,0 +1,7 @@
+<div class="modal-container">
+  <app-modal 
+    *ngIf="currentModal"
+    [config]="currentModal.config"
+    (closed)="onModalClosed($event)">
+  </app-modal>
+</div>

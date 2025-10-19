@@ -1,0 +1,170 @@
+@import '../styles/variables';
+@import '../styles/mixins';
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-container {
+  background: $white;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow: hidden;
+  animation: slideIn 0.3s ease;
+  
+  &.alert {
+    .modal-header {
+      background: lighten($dark-blue, 10%);
+    }
+    
+    .btn-primary {
+      background: $dark-blue;
+    }
+  }
+  
+  &.confirm {
+    .modal-header {
+      background: lighten($yellow, 10%);
+    }
+    
+    .btn-primary {
+      background: $yellow;
+      color: $white;
+    }
+  }
+  
+  &.prompt {
+    .modal-header {
+      background: lighten($green, 10%);
+    }
+    
+    .btn-primary {
+      background: $green;
+    }
+  }
+}
+
+.modal-header {
+  padding: $spacing-lg;
+  background: $dark-blue;
+  color: $white;
+  
+  .modal-title {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+}
+
+.modal-body {
+  padding: $spacing-xl;
+  max-height: 60vh;
+  overflow-y: auto;
+  
+  .modal-message {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: lighten($dark-blue, 10%);
+    margin-bottom: $spacing-lg;
+    
+    pre {
+      background: lighten($dark-blue, 70%);
+      padding: $spacing-md;
+      border-radius: $border-radius;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+      margin: $spacing-md 0;
+    }
+    
+    strong {
+      color: $dark-blue;
+      font-weight: 600;
+    }
+  }
+  
+  .modal-input {
+    .input-field {
+      width: 100%;
+      padding: $spacing-md;
+      border: 2px solid lighten($dark-blue, 50%);
+      border-radius: $border-radius;
+      font-size: 1rem;
+      transition: border-color 0.3s ease;
+      
+      &:focus {
+        outline: none;
+        border-color: $dark-blue;
+        box-shadow: 0 0 0 3px rgba($dark-blue, 0.1);
+      }
+    }
+  }
+}
+
+.modal-footer {
+  padding: $spacing-lg;
+  background: lighten($dark-blue, 70%);
+  display: flex;
+  gap: $spacing-md;
+  justify-content: flex-end;
+  
+  .btn {
+    min-width: 100px;
+    
+    &.btn-danger {
+      background: #EF4444;
+      
+      &:hover {
+        background: darken(#EF4444, 10%);
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { 
+    opacity: 0;
+    transform: translateY(-50px) scale(0.9);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 768px) {
+  .modal-container {
+    width: 95%;
+    margin: $spacing-md;
+  }
+  
+  .modal-body {
+    padding: $spacing-lg;
+  }
+  
+  .modal-footer {
+    flex-direction: column;
+    
+    .btn {
+      width: 100%;
+    }
+  }
+}

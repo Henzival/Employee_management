@@ -1,0 +1,20 @@
+directories:
+  output: release
+  buildResources: build
+appId: com.employee-management.app
+productName: EmpMan
+files:
+  - filter:
+      - dist/**/*
+      - src/main.ts
+      - src/assets/**/*
+win:
+  icon: assets/icon.ico
+  target: nsis
+mac:
+  icon: assets/icon.icns
+  target: dmg
+linux:
+  icon: assets/icon.png
+  target: AppImage
+electronVersion: 38.2.2

@@ -1,0 +1,41 @@
+<div class="modal-backdrop" 
+     (click)="onBackdropClick($event)"
+     (keydown)="onKeydown($event)"
+     tabindex="0">
+  <div class="modal-container" [class]="config.type">
+    <div class="modal-header">
+      <h3 class="modal-title">{{ config.title }}</h3>
+    </div>
+    
+    <div class="modal-body">
+      <div class="modal-message" [innerHTML]="config.message"></div>
+      
+      <div *ngIf="config.type === 'prompt'" class="modal-input">
+        <input 
+          type="text" 
+          [(ngModel)]="inputValue"
+          (keydown.enter)="confirm()"
+          placeholder="Введите значение"
+          class="input-field">
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button 
+        *ngIf="config.type === 'confirm' || config.type === 'prompt'"
+        type="button" 
+        class="btn btn-secondary"
+        (click)="cancel()">
+        {{ config.cancelText || 'Отмена' }}
+      </button>
+      
+      <button 
+        type="button" 
+        class="btn btn-primary"
+        (click)="confirm()"
+        >
+        {{ config.confirmText || 'OK' }}
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,63 @@
+<div class="employee-list">
+  <div class="header-actions">
+    <h2>{{ translationService.translate('EMPLOYEE.LIST') }}</h2>
+  </div>
+
+  <div class="filters">
+    <div class="filter-group">
+      <label>{{ translationService.translate('FILTERS.SORT_BY') }}:</label>
+      <select (change)="onSortChange($any($event.target).value)">
+        <option value="last_name">{{ translationService.translate('FILTERS.LAST_NAME') }}</option>
+        <option value="position">{{ translationService.translate('FILTERS.POSITION') }}</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label>{{ translationService.translate('FILTERS.FILTER_BY_POSITION') }}:</label>
+      <select (change)="onPositionFilterChange($any($event.target).value)"
+              class="position-filter">
+        
+        <option value="all">{{ translationService.translate('POSITION.ALL') }}</option>
+        
+        <ng-container *ngIf="positionsWithCount$ | async as positionsWithCount">
+          <option *ngFor="let item of positionsWithCount" 
+                  [value]="item.position.id"
+                  [disabled]="item.count === 0">
+            {{ item.position.name }} ({{ item.count }})
+          </option>
+        </ng-container>
+      </select>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <ng-container *ngIf="filteredEmployees$ | async as employees">
+      <table class="table" *ngIf="employees.length > 0">
+        <thead>
+          <tr>
+            <th>{{ translationService.translate('EMPLOYEE.FIELDS.EMPLOYEE_ID') }}</th>
+            <th>{{ translationService.translate('EMPLOYEE.FIELDS.LAST_NAME') }}</th>
+            <th>{{ translationService.translate('EMPLOYEE.FIELDS.FIRST_NAME') }}</th>
+            <th>{{ translationService.translate('EMPLOYEE.FIELDS.POSITION') }}</th>
+            <th>{{ translationService.translate('EMPLOYEE.FIELDS.EMAIL') }}</th>
+            <th>{{ translationService.translate('EMPLOYEE.FIELDS.SALARY') }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let employee of employees">
+            <td>{{ employee.employee_id }}</td>
+            <td>{{ employee.last_name }}</td>
+            <td>{{ employee.first_name }}</td>
+            <td>{{ employee.position_name }}</td>
+            <td>{{ employee.contact_email }}</td>
+            <td>{{ employee.salary | currency }}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="employees.length === 0" class="no-data">
+        <p>{{ translationService.translate('NODATA.MESSAGE') }}</p>
+      </div>
+    </ng-container>
+  </div>
+</div>
